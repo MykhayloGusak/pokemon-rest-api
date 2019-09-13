@@ -1,8 +1,25 @@
 const { Pokemon, Trainer } = require("../models");
+const Joi = require("@hapi/joi");
 
 const logic = {
   createPokemon(name, type, level) {
-    // todo validation
+    const schema = Joi.object({
+      name: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15)
+        .required(),
+      type: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15)
+        .required(),
+      level: Joi.number().required()
+    });
+
+    const { error, value } = schema.validate({ name, type, level });
+    debugger;
+    if (error) throw new Error(error.message);
     debugger;
     return (async () => {
       try {

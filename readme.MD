@@ -19,3 +19,6 @@ You will also see any lint errors in the console.
 Launches the test runner in the interactive watch mode.<br>
 See the section about [running tests](https://nodejs.org/en/docs/inspector) for more information.
 
+### Trello organization
+
+[Trello](https://trello.com/b/PWzq9Qir/pokemon-rest-api)
