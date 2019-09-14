@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const logic = require("./logic");
+const jwt = require("jsonwebtoken");
 
 const {
   env: { PORT, MONGO_URL }
@@ -17,13 +18,29 @@ const {
     await mongoose.connect(MONGO_URL, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
+      useFindAndModify: false
     });
     console.log(`connected to database MongoDB! Port:${MONGO_URL}`);
 
     app.use(bodyParser.json());
 
     app.use(cors());
+
+    app.get("/pokemon/:name", (req, res) => {
+      const {
+        params: { name }
+      } = req;
+
+      return (async () => {
+        try {
+          const data = await logic.readPokemon(name);
+          res.status(200).json({ data });
+        } catch (err) {
+          res.status(400).json({ message: err.message });
+        }
+      })();
+    });
 
     app.post("/pokemon", (req, res) => {
       const {
@@ -33,22 +50,25 @@ const {
       return (async () => {
         try {
           await logic.createPokemon(name, type, level);
-          res.status(200).json("Pokemon has been created successfully!");
+          res
+            .status(200)
+            .json({ message: "Pokemon has been created successfully!" });
         } catch (err) {
           res.status(400).json({ message: err.message });
         }
       })();
     });
 
-    app.put("/pokemon", (req, res) => {
+    app.put("/pokemon/:name", (req, res) => {
       const {
-        body: { name, type, level }
+        body,
+        params: { name }
       } = req;
-
+      debugger;
       return (async () => {
         try {
-          await logic.updatePokemon(name, type, level);
-          res.status(200).json("Pokemon has been updated successfully!");
+          const data = await logic.updatePokemon(name, body);
+          res.status(200).json({ data });
         } catch (err) {
           res.status(400).json({ message: err.message });
         }
@@ -57,13 +77,15 @@ const {
 
     app.delete("/pokemon/:name", (req, res) => {
       const {
-        body: { name }
+        params: { name }
       } = req;
 
       return (async () => {
         try {
-          await logic.deletePokemon(name);
-          res.status(200).json("Pokemon has been deleted successfully!");
+          const data = await logic.deletePokemon(name);
+          res
+            .status(200)
+            .json({ message: "Pokemon has been deleted successfully!" });
         } catch (err) {
           res.status(400).json({ message: err.message });
         }

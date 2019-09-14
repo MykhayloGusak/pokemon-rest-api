@@ -15,7 +15,9 @@ describe("logic", () => {
     await mongoose.connect(MONGO_URL_LOGIC_TEST, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
+      useFindAndModify: false,
+      findOneAndDelete: false
     });
     console.log(`connected to database MongoDB! Port:${MONGO_URL_LOGIC_TEST}`);
   });
@@ -285,11 +287,132 @@ describe("logic", () => {
         });
       });
     });
-    describe("Update pokemon", () => {});
-    describe("Delete pokemon", () => {});
+    describe("Read pokemon", () => {
+      beforeEach(async () => {
+        name = faker.name.firstName();
+        type = faker.name.lastName();
+        level = faker.random.number();
+
+        await Pokemon.create({ name, type, level });
+      });
+      it("should succeed on correct pokemon data", async () => {
+        const data = await logic.readPokemon(name);
+        expect(data).to.exist;
+        expect(data.name).to.have.string(name);
+        expect(data.type).to.have.string(type);
+        expect(data.level)
+          .to.equal(level)
+          .that.is.a("number");
+      });
+    });
+    describe("Update pokemon", () => {
+      let name2, type2, level2;
+
+      beforeEach(async () => {
+        name = faker.name.firstName();
+        type = faker.name.lastName();
+        level = faker.random.number();
+
+        name2 = faker.name.firstName();
+        type2 = faker.name.lastName();
+        level2 = faker.random.number();
+
+        await Pokemon.create({ name, type, level });
+      });
+
+      it("should succeed on correct pokemon data", async () => {
+        const data = await logic.updatePokemon(name, {
+          name: name2,
+          type: type2,
+          level: level2
+        });
+        expect(data).to.exist;
+        expect(data.name).to.have.string(name2);
+        expect(data.type).to.have.string(type2);
+        expect(data.level)
+          .to.equal(level2)
+          .that.is.a("number");
+
+        const dbData = await Pokemon.findOne({ name: name2 }).lean();
+        expect(dbData).to.exist;
+        expect(dbData.name).to.have.string(name2);
+        expect(dbData.type).to.have.string(type2);
+        expect(dbData.level)
+          .to.equal(level2)
+          .that.is.a("number");
+      });
+    });
+    describe("Delete pokemon", () => {
+      beforeEach(async () => {
+        name = faker.name.firstName();
+        type = faker.name.lastName();
+        level = faker.random.number();
+
+        await Pokemon.create({ name, type, level });
+      });
+      it("should succeed on correct pokemon data", async () => {
+        const data = await logic.deletePokemon(name);
+        expect(data).not.to.exist;
+        const dbData = await Pokemon.findOne({ name });
+        expect(dbData).not.to.exist;
+      });
+    });
+  });
+
+  describe("Trainer", () => {
+    describe("Create trainer", () => {});
+    describe("Read trainer", () => {});
+    describe("Update trainer", () => {});
+    describe("Delete trainer", () => {});
   });
 
   after(async () => {
     await Pokemon.deleteMany();
   });
 });
+
+// [
+//   {
+//     name: "Charmander",
+//     type: "Fire",
+//     level: 1,
+//     image:
+//       "https://vignette.wikia.nocookie.net/es.pokemon/images/5/56/Charmander.png/revision/latest?cb=20140207202456"
+//   },
+//   {
+//     name: "Squirtle",
+//     type: "Water",
+//     level: 1,
+//     image:
+//       "https://vignette.wikia.nocookie.net/es.pokemon/images/e/e3/Squirtle.png/revision/latest?cb=20160309230820"
+//   },
+//   {
+//     name: "Pikachu",
+//     type: "Electrical ",
+//     level: 1,
+//     image:
+//       "https://vignette.wikia.nocookie.net/es.pokemon/images/7/77/Pikachu.png/revision/latest?cb=20150621181250"
+//   },
+//   {
+//     name: "Sandshrew",
+//     type: "Earth ",
+//     level: 1,
+//     image:
+//       "https://vignette.wikia.nocookie.net/es.pokemon/images/d/df/Sandshrew.png/revision/latest?cb=20080909114740"
+//   },
+//   {
+//     name: "Clefairy",
+//     type: "Magic ",
+//     level: 1,
+//     image:
+//       "https://vignette.wikia.nocookie.net/es.pokemon/images/d/d2/Clefairy.png/revision/latest?cb=20170615204912"
+//   },
+//   ,
+//   {
+//     name: "Jigglypuff",
+//     type: "Normal ",
+//     level: 1,
+//     image:
+//       "https://vignette.wikia.nocookie.net/es.pokemon/images/a/af/Jigglypuff.png/revision/latest?cb=20150110232910"
+//   }
+// ];

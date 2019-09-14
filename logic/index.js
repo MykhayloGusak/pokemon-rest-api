@@ -2,6 +2,28 @@ const { Pokemon, Trainer } = require("../models");
 const Joi = require("@hapi/joi");
 
 const logic = {
+  readPokemon(name) {
+    const schema = Joi.object({
+      name: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15)
+    });
+
+    const { error } = schema.validate({ name });
+    if (error) throw new Error(error.message);
+
+    return (async () => {
+      try {
+        const data = await Pokemon.findOne({ name }).lean();
+        if (!data) throw new Error(`Pokemon with name ${name} not exists.`);
+
+        return data;
+      } catch (err) {
+        throw Error(err.message);
+      }
+    })();
+  },
   createPokemon(name, type, level) {
     const schema = Joi.object({
       name: Joi.string()
@@ -17,47 +39,98 @@ const logic = {
       level: Joi.number().required()
     });
 
-    const { error, value } = schema.validate({ name, type, level });
-    debugger;
+    const { error } = schema.validate({ name, type, level });
     if (error) throw new Error(error.message);
-    debugger;
     return (async () => {
       try {
-        debugger;
         const pokemon = await Pokemon.findOne({ name }).lean();
-        debugger;
         if (!!pokemon === true)
           throw new Error(`Pokemon with name ${name} already exists`);
-        debugger;
         const _pokemon = await new Pokemon({
           name,
           type,
           level
         });
-        debugger;
         await _pokemon.save();
       } catch (err) {
-        debugger;
         throw Error(err.message);
       }
     })();
   },
 
-  updatePokemon(name, type, level) {
-    // todo validation
+  updatePokemon(_name, body) {
+    const { name, type, level } = body;
+    debugger;
+    const schema = Joi.object({
+      _name: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15),
+      name: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15),
+      type: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15),
+      level: Joi.number()
+    });
+    debugger;
+    const { error } = schema.validate({ _name, name, type, level });
 
+    if (error) throw new Error(error.message);
+    debugger;
     return (async () => {
       try {
-      } catch (err) {}
+        const pokemon = await Pokemon.findOne({ name: _name })
+          .select("name type level _id")
+          .lean();
+
+        if (!pokemon) throw new Error(`Pokemon with name ${_name} not exists.`);
+        const _pokemon = {};
+        debugger;
+        if (name) _pokemon.name = name;
+        if (type) _pokemon.type = type;
+        if (level) _pokemon.level = level;
+        debugger;
+        const data = await Pokemon.findByIdAndUpdate(
+          { _id: pokemon._id },
+          _pokemon,
+          { new: true }
+        )
+          .select("name type level -_id")
+          .lean();
+        debugger;
+        return data;
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
   deletePokemon(name) {
-    // todo validation
+    debugger;
+    const schema = Joi.object({
+      name: Joi.string()
+        .alphanum()
+        .min(2)
+        .max(15)
+    });
+    debugger;
+    const { error } = schema.validate({ name });
+
+    if (error) throw new Error(error.message);
 
     return (async () => {
       try {
-      } catch (err) {}
+        const pokemon = await Pokemon.findOne({ name }).lean();
+        if (!pokemon) throw new Error(`Pokemon with name ${name} not exists.`);
+
+        await Pokemon.findByIdAndDelete({ _id: pokemon._id });
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
@@ -66,7 +139,9 @@ const logic = {
 
     return (async () => {
       try {
-      } catch (err) {}
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
@@ -75,7 +150,9 @@ const logic = {
 
     return (async () => {
       try {
-      } catch (err) {}
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
@@ -84,7 +161,9 @@ const logic = {
 
     return (async () => {
       try {
-      } catch (err) {}
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
@@ -93,7 +172,9 @@ const logic = {
 
     return (async () => {
       try {
-      } catch (err) {}
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
@@ -102,21 +183,33 @@ const logic = {
 
     return (async () => {
       try {
-      } catch (err) {}
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
   getAllPokemons() {
     return (async () => {
       try {
-      } catch (err) {}
+        const data = await Pokemon.find({}).lean();
+        if (!data) throw Error(`There are no pokemons.`);
+        return data;
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   },
 
   getAllTrainers() {
     return (async () => {
       try {
-      } catch (err) {}
+        const data = await Trainer.find({}).lean();
+        if (!data) throw Error(`There are no trainers.`);
+        return data;
+      } catch (err) {
+        throw Error(err.message);
+      }
     })();
   }
 };
