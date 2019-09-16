@@ -49,9 +49,9 @@ Launches the test runner in the interactive watch mode.
 
 ## Testing
 
-![Testing 1](img/testing1.jpg)
-![Testing 2](img/testing2.jpg)
-![Testing 3](img/testing3.jpg)
+![Testing 1](img/testing1.PEG)
+![Testing 2](img/testing2.PEG)
+![Testing 3](img/testing3.PEG)
 
 ## Coverage
 
