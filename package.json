@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "mocha --timeout 15000",
-    "debug-test": "mocha --inspect --debug-brk",
+    "test-debug": "mocha --inspect-brk *",
     "debug": "node --inspect-brk *"
   },
   "repository": {
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/MichaelXXI/pokemon-rest-api#readme",
   "dependencies": {
     "@hapi/joi": "^16.0.0",
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
@@ -36,6 +37,8 @@
     "chai": "^4.2.0",
     "faker": "^4.1.0",
     "mocha": "^6.2.0",
-    "nodemon": "^1.19.2"
+    "nodemon": "^1.19.2",
+    "now": "^16.2.0",
+    "nyc": "^14.1.1"
   }
 }

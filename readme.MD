@@ -1,24 +1,58 @@
 # Pokemon REST Api
 
-## API
+![Joke](img/image.jpg)
+
+## Introductin
+
+TO DO
 
 ## Available Scripts for development
 
 In the project directory, you can run:
 
-### `npm start`
+### `node index.js`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3030](http://localhost:3030) to view it in the browser.
+Runs the server. <br>
+Open [http://localhost:3030](http://localhost:3030).
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### `npm test logic/index.spec.js`
 
-### `npm test`
+Launches the test runner in the interactive watch mode.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://nodejs.org/en/docs/inspector) for more information.
-
-### Trello organization
+## Trello organization
 
 [Trello](https://trello.com/b/PWzq9Qir/pokemon-rest-api)
+
+## Pokemon routes
+
+| POKEMONS                    | Method | Path                 | Returns        |
+| --------------------------- | ------ | -------------------- | -------------- |
+| Create pokemon              | POST   | /pokemon             | Object         |
+| Read pokemon                | GET    | /pokemon/:name       | Object         |
+| Update pokemon              | PUT    | /pokemon/:name       | Updated Object |
+| Delete pokemon              | DELETE | /pokemon/:name       | Message        |
+| Read all pokemons           | GET    | /pokemons            | Array          |
+| Read the number of pokemons | GET    | /pokemons/registered | Array          |
+
+## Trainer routes
+
+| Trainers                                       | Method | Token | Path                       | Returns        |
+| ---------------------------------------------- | ------ | ----- | -------------------------- | -------------- |
+| Create trainer                                 | POST   | ✖     | /trainer/create            | Token          |
+| Auth trainer                                   | POST   | ✖     | /trainer/auth              | Token          |
+| Read trainer                                   | GET    | ✔     | /trainer                   | Object         |
+| Update trainer                                 | PUT    | ✔     | /trainer                   | Updated Object |
+| Delete trainer                                 | DELETE | ✔     | /trainer                   | Message        |
+| Read all trainers                              | GET    | ✔     | /trainers                  | Array          |
+| Read firstName and number of caputerd pokemons | GET    | ✔     | /trainers/all              | Array          |
+| Toggle pokemon to captured list                | GET    | ✔     | /trainer/toggle/:pokemonId | Object         |
+
+## Testing
+
+![Testing 1](img/testing1.jpg)
+![Testing 2](img/testing2.jpg)
+![Testing 3](img/testing3.jpg)
+
+## Coverage
+
+TO DO
